@@ -6,12 +6,10 @@ dotenv.config();
 
 // Criar a conexão com o banco de dados usando as variáveis de ambiente
 const con = mysql.createConnection({
-    db_host: process.env.DB_HOST,
-    db_username: process.env.DB_USERNAME,
-    db_password: process.env.DB_PASSWORD,
-    db_database: process.env.DB_DATABASE,
-    db_port:process.env.DB_PORT,
-    db_connection:process.env.DB_CONNECTION
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
 });
 
 con.connect(function(err){

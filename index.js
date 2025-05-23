@@ -235,3 +235,52 @@ app.delete("/delete/:id", (req, res) => {
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Servidor rodando na porta ${process.env.PORT || 3000}`);
 });
+
+
+app.get('/certificado/:codigo', (req, res) => {
+    const codigo = req.params.codigo;
+
+    const sql = 'SELECT * FROM empregados WHERE codigo = ? LIMIT 1';
+    db.query(sql, [codigo], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Erro ao buscar certificado');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('Certificado não encontrado');
+        }
+
+        const cert = results[0];
+
+        // Retorna uma página HTML simples
+        const html = `
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+                <meta charset="UTF-8">
+                <title>Certificado ${cert.codigo}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+                    h1 { color: #333; }
+                    .campo { margin-bottom: 10px; }
+                    .label { font-weight: bold; }
+                </style>
+            </head>
+            <body>
+                <h1>Certificado de Autenticidade</h1>
+                <div class="campo"><span class="label">Código:</span> ${cert.codigo}</div>
+                <div class="campo"><span class="label">Data:</span> ${new Date(cert.data).toLocaleDateString('pt-BR')}</div>
+                <div class="campo"><span class="label">Revisão:</span> ${cert.revisao}</div>
+                <div class="campo"><span class="label">Validade:</span> ${new Date(cert.validade).toLocaleDateString('pt-BR')}</div>
+                <div class="campo"><span class="label">Responsável Técnico:</span> ${cert.responsavel}</div>
+                <div class="campo"><span class="label">Registro Profissional:</span> CREA: ${cert.registro}</div>
+                <br>
+                <p>Este certificado foi verificado automaticamente por sistema online.</p>
+            </body>
+            </html>
+        `;
+
+        res.send(html);
+    });
+});

@@ -167,20 +167,13 @@ app.delete("/delete/:id", (req, res) => {
 
 // ✅ NOVA ROTA: Buscar certificado por código (para QR Code)
 app.get("/certificado/codigo/:codigo", (req, res) => {
-    const codigo = req.params.codigo;
+  const codigo = req.params.codigo;
 
-    db.query('SELECT * FROM empregados WHERE codigo = ?', [codigo], (err, result) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send("Erro ao buscar certificado.");
-        }
-
-        if (result.length === 0) {
-            return res.status(404).send("Certificado não encontrado.");
-        }
-
-        res.send(result[0]); // Retorna o primeiro resultado (único esperado)
-    });
+  db.query('SELECT * FROM empregados WHERE codigo = ?', [codigo], (err, result) => {
+    if (err) return res.status(500).send("Erro ao buscar certificado.");
+    if (result.length === 0) return res.status(404).send("Certificado não encontrado.");
+    res.send(result[0]); // Retorna os dados do certificado
+  });
 });
 
 // Iniciar o servidor
